@@ -1,0 +1,41 @@
+# =============================================================================
+# Railway Configuration for OpenClaw
+# =============================================================================
+# Documentation: https://docs.railway.com/reference/config-as-code
+# =============================================================================
+
+[build]
+# Use Docker for building (not Nixpacks)
+builder = "dockerfile"
+# Optional: specify Dockerfile path if not in root
+# dockerfilePath = "Dockerfile"
+
+[deploy]
+# Health check endpoint
+healthcheckPath = "/health"
+# Timeout for health check (seconds)
+healthcheckTimeout = 300
+# Restart policy on failure
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
+# Number of replicas (1 for stateful apps with volumes)
+numReplicas = 1
+
+# =============================================================================
+# IMPORTANT: Volume Configuration
+# =============================================================================
+# You MUST create a volume in Railway dashboard and mount it at /data
+# This is done via Railway UI, not in this file:
+#   1. Go to your service in Railway dashboard
+#   2. Click "Volumes" tab
+#   3. Create new volume, mount at: /data
+# =============================================================================
+
+# =============================================================================
+# Environment Variables (set via Railway dashboard, NOT here)
+# =============================================================================
+# Required:
+#   RAILWAY_RUN_UID=0 (for volume permissions)
+#
+# Everything else is configured via the Setup page after deployment.
+# =============================================================================

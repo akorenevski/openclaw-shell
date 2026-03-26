@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  openclaw:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: openclaw-local
+    ports:
+      - "8081:8080"
+    volumes:
+      # Bind mount to local data directory (or clone of your backup repo)
+      - ./project-data:/data
+    environment:
+      PORT: 8080
+      NODE_ENV: production
+
+      # Browser config (same as Railway)
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+      PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH: /usr/bin/chromium
+
+      # Auth proxy settings (set your own password!)
+      PROXY_USER: admin
+      PROXY_PASSWORD: admin  # CHANGE THIS for production!
+
+      # Optional: set your own gateway token
+      # OPENCLAW_GATEWAY_TOKEN: your-token-here
+
+    restart: unless-stopped
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s

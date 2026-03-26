@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup - OpenClaw</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 560px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #00d9ff 0%, #00ff88 100%);
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        h1 { font-size: 1.75rem; font-weight: 600; }
+        .subtitle { color: #666; margin-top: 0.5rem; }
+
+        /* Card styling */
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
+            backdrop-filter: blur(10px);
+        }
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .card-title .icon { opacity: 0.8; }
+        .required { color: #ff6b6b; font-size: 0.75rem; margin-left: auto; }
+        .optional { color: #666; font-size: 0.75rem; margin-left: auto; }
+
+        /* Form elements */
+        .input-group { margin-bottom: 1rem; }
+        .input-group:last-child { margin-bottom: 0; }
+        label {
+            display: block;
+            color: #888;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+        input:focus {
+            outline: none;
+            border-color: #00d9ff;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.1);
+        }
+        input::placeholder { color: #555; }
+        input:disabled, input[readonly] {
+            background: rgba(255, 255, 255, 0.02);
+            color: #888;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #00d9ff 0%, #00ff88 100%);
+            border: none;
+            border-radius: 12px;
+            color: #000;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px -10px rgba(0, 217, 255, 0.5);
+        }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .btn-secondary {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: #666;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-secondary:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #888;
+        }
+
+        /* Status messages */
+        .status {
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.25rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .status.show { display: block; }
+        .status.success {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            color: #00ff88;
+        }
+        .status.error {
+            background: rgba(255, 59, 48, 0.1);
+            border: 1px solid rgba(255, 59, 48, 0.3);
+            color: #ff6b6b;
+        }
+        .status.warning {
+            background: rgba(255, 204, 0, 0.1);
+            border: 1px solid rgba(255, 204, 0, 0.3);
+            color: #ffcc00;
+        }
+
+        /* Success panel with next steps */
+        .success-panel {
+            display: none;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+        .success-panel.show { display: block; }
+        .success-panel h2 {
+            color: #00ff88;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .next-steps {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .next-steps li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        .next-steps li:last-child { border-bottom: none; }
+        .step-number {
+            width: 24px;
+            height: 24px;
+            background: rgba(0, 217, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #00d9ff;
+            flex-shrink: 0;
+        }
+        .step-content {
+            flex: 1;
+        }
+        .step-content strong {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+        .step-content p {
+            color: #666;
+            font-size: 0.85rem;
+            margin: 0;
+        }
+        .step-content code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.25rem;
+        }
+        .action-buttons a, .action-buttons button {
+            flex: 1;
+            padding: 0.875rem;
+            border-radius: 12px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-dashboard {
+            background: linear-gradient(135deg, #00d9ff 0%, #00ff88 100%);
+            color: #000;
+        }
+        .btn-dashboard:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px -10px rgba(0, 217, 255, 0.5);
+        }
+        .btn-files {
+            background: rgba(255, 255, 255, 0.08);
+            color: #888;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .btn-files:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+
+        /* Footer links */
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        .footer a {
+            color: #555;
+            text-decoration: none;
+            margin: 0 1rem;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        .footer a:hover { color: #888; }
+
+        /* Help text */
+        .help {
+            font-size: 0.8rem;
+            color: #555;
+            margin-top: 0.4rem;
+        }
+        .help a {
+            color: #00d9ff;
+            text-decoration: none;
+        }
+        .help a:hover { text-decoration: underline; }
+
+        /* Provider toggle */
+        .provider-toggle {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .provider-btn {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #888;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .provider-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ccc;
+        }
+        .provider-btn.active {
+            background: rgba(0, 217, 255, 0.12);
+            border-color: rgba(0, 217, 255, 0.4);
+            color: #00d9ff;
+        }
+
+        /* Copyable code inline */
+        code.copyable {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+            color: #b8cad9;
+            cursor: pointer;
+            user-select: all;
+            transition: all 0.2s;
+        }
+        code.copyable:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+            color: #dce8f0;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(0, 0, 0, 0.3);
+            border-radius: 50%;
+            border-top-color: #000;
+            animation: spin 0.8s linear infinite;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-icon">🦞</div>
+            <h1>OpenClaw Setup</h1>
+            <p class="subtitle">Configure your gateway</p>
+        </div>
+
+        <div id="status-message" class="status"></div>
+
+        <!-- Success panel with next steps -->
+        <div id="success-panel" class="success-panel">
+            <h2>✅ Settings Saved!</h2>
+            <p style="color: #888; margin-bottom: 1rem;">Your gateway is configured and ready to use.</p>
+
+            <ol class="next-steps">
+                <li>
+                    <span class="step-number">1</span>
+                    <div class="step-content">
+                        <strong>Open the Dashboard</strong>
+                        <p>You're already logged in. Just click below!</p>
+                    </div>
+                </li>
+                <li id="telegram-step" style="display: none;">
+                    <span class="step-number">2</span>
+                    <div class="step-content">
+                        <strong>Connect Telegram</strong>
+                        <p>Message your bot, then: <code>openclaw pairing approve telegram &lt;code&gt;</code></p>
+                    </div>
+                </li>
+            </ol>
+
+            <div class="action-buttons">
+                <a href="/dashboard/" class="btn-dashboard" id="dashboard-link">Go to Dashboard</a>
+                <a href="/files/" class="btn-files">Browse Files</a>
+            </div>
+        </div>
+
+        <form id="setup-form">
+            <!-- Inference Provider -->
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon">🧠</span>
+                    Inference Provider
+                    <span class="required">Required</span>
+                </div>
+
+                <div class="input-group">
+                    <label>Provider</label>
+                    <div class="provider-toggle">
+                        <button type="button" class="provider-btn active" data-provider="anthropic" onclick="selectProvider('anthropic')">Anthropic</button>
+                        <button type="button" class="provider-btn" data-provider="openai" onclick="selectProvider('openai')">OpenAI</button>
+                        <button type="button" class="provider-btn" data-provider="chatgpt" onclick="selectProvider('chatgpt')">ChatGPT</button>
+                    </div>
+                </div>
+
+                <div id="anthropic-fields">
+                    <div class="input-group">
+                        <label for="anthropicApiKey">Anthropic API Key</label>
+                        <input type="password" id="anthropicApiKey" name="anthropicApiKey"
+                               placeholder="sk-ant-..." autocomplete="off">
+                        <p class="help" style="margin-top: 0.75rem;">
+                            Run <code class="copyable" onclick="copyText(this)" title="Click to copy">claude setup-token</code> in terminal, or get from <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a>
+                        </p>
+                        <p class="help" style="color: #886633; margin-top: 0.5rem; font-size: 0.75rem;">Standard subscription-generated API keys are restricted to Anthropic products only. Use at your own risk.</p>
+                    </div>
+                </div>
+
+                <div id="openai-fields" style="display: none;">
+                    <div class="input-group">
+                        <label for="openaiApiKey">OpenAI API Key</label>
+                        <input type="password" id="openaiApiKey" name="openaiApiKey"
+                               placeholder="sk-..." autocomplete="off">
+                        <p class="help">Get from <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a></p>
+                    </div>
+                </div>
+
+                <div id="chatgpt-fields" style="display: none;">
+                    <div id="codex-status" class="input-group" style="display: none;">
+                        <div style="padding: 0.75rem 1rem; background: rgba(0, 255, 136, 0.08); border: 1px solid rgba(0, 255, 136, 0.2); border-radius: 10px;">
+                            <span style="color: #00ff88; font-weight: 500;" id="codex-status-text">Connected</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <button type="button" class="btn-primary" id="codex-signin-btn" onclick="startChatGPTAuth()" style="background: linear-gradient(135deg, #10a37f 0%, #1a7f64 100%);">
+                            Sign in with ChatGPT
+                        </button>
+                        <p class="help" style="margin-top: 0.75rem;">Uses your ChatGPT Plus or Pro subscription via OAuth. No API key needed.</p>
+                    </div>
+
+                    <div id="codex-paste-section" style="display: none;">
+                        <div class="input-group">
+                            <label for="codexCallbackUrl">Paste the redirect URL</label>
+                            <input type="text" id="codexCallbackUrl"
+                                   placeholder="http://localhost:1455/auth/callback?code=...&state=..."
+                                   autocomplete="off" style="font-family: 'Monaco', 'Menlo', 'Consolas', monospace; font-size: 0.85rem;">
+                            <p class="help" style="margin-top: 0.5rem;">After signing in, your browser will redirect to a page that won't load. Copy the <strong>full URL</strong> from the address bar and paste it above.</p>
+                        </div>
+                        <button type="button" class="btn-primary" id="codex-complete-btn" onclick="completeChatGPTAuth()" style="background: linear-gradient(135deg, #10a37f 0%, #1a7f64 100%); margin-top: 0.5rem;">
+                            Complete Sign-in
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Login Credentials -->
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon">🔑</span>
+                    Login Credentials
+                    <span class="required">Required</span>
+                </div>
+
+                <div class="input-group">
+                    <label for="proxyUser">Username</label>
+                    <input type="text" id="proxyUser" name="proxyUser"
+                           placeholder="Choose a username" autocomplete="username">
+                    <p class="help">Login username for this gateway</p>
+                </div>
+
+                <div class="input-group">
+                    <label for="proxyPassword">Password</label>
+                    <input type="password" id="proxyPassword" name="proxyPassword"
+                           placeholder="Choose a secure password" autocomplete="new-password">
+                    <p class="help">Login password for this gateway</p>
+                </div>
+            </div>
+
+            <!-- Telegram Settings -->
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon">📱</span>
+                    Telegram
+                    <span class="optional">Optional</span>
+                </div>
+
+                <div class="input-group">
+                    <label for="telegramBotToken">Bot Token</label>
+                    <input type="password" id="telegramBotToken" name="telegramBotToken"
+                           placeholder="123456789:ABC..." autocomplete="off">
+                    <p class="help">Get from <a href="https://t.me/BotFather" target="_blank">@BotFather</a> on Telegram</p>
+                </div>
+
+                <div class="input-group">
+                    <label for="telegramUserId">Your User ID</label>
+                    <input type="text" id="telegramUserId" name="telegramUserId"
+                           placeholder="123456789">
+                    <p class="help">Get from <a href="https://t.me/userinfobot" target="_blank">@userinfobot</a> on Telegram</p>
+                </div>
+            </div>
+
+            <!-- Optional API Keys -->
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon">🔌</span>
+                    Integrations
+                    <span class="optional">Optional</span>
+                </div>
+
+                <div class="input-group">
+                    <label for="deepgramApiKey">Deepgram API Key</label>
+                    <input type="password" id="deepgramApiKey" name="deepgramApiKey"
+                           placeholder="For voice transcription" autocomplete="off">
+                    <p class="help">Enables voice messages. Get from <a href="https://console.deepgram.com" target="_blank">console.deepgram.com</a></p>
+                </div>
+
+                <div class="input-group">
+                    <label for="braveSearchApiKey">Brave Search API Key</label>
+                    <input type="password" id="braveSearchApiKey" name="braveSearchApiKey"
+                           placeholder="For web search" autocomplete="off">
+                    <p class="help">Enables web search. Get from <a href="https://brave.com/search/api" target="_blank">brave.com/search/api</a></p>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary" id="save-btn">
+                Save Settings
+            </button>
+            <div style="text-align: center; margin-top: 0.75rem;">
+                <button type="button" class="btn-secondary" onclick="restartGateway()" id="restart-btn" style="color: #ff9500; border-color: rgba(255, 149, 0, 0.3);">
+                    Restart Gateway
+                </button>
+            </div>
+        </form>
+
+        <p class="footer">
+            <a href="/">Back to Home</a>
+            <a href="/logout">Sign Out</a>
+        </p>
+    </div>
+
+    <script>
+        const form = document.getElementById('setup-form');
+        const statusEl = document.getElementById('status-message');
+        const saveBtn = document.getElementById('save-btn');
+
+        // Provider selection
+        let currentProvider = 'anthropic';
+
+        function selectProvider(provider) {
+            currentProvider = provider;
+            document.querySelectorAll('.provider-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.provider === provider);
+            });
+            document.getElementById('anthropic-fields').style.display = provider === 'anthropic' ? 'block' : 'none';
+            document.getElementById('openai-fields').style.display = provider === 'openai' ? 'block' : 'none';
+            document.getElementById('chatgpt-fields').style.display = provider === 'chatgpt' ? 'block' : 'none';
+        }
+
+        // ChatGPT OAuth flow
+        async function startChatGPTAuth() {
+            const btn = document.getElementById('codex-signin-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span>Starting...';
+
+            try {
+                const res = await fetch('/api/setup/codex-auth/start', { method: 'POST' });
+                const data = await res.json();
+
+                if (data.error) {
+                    showStatus('error', 'Failed to start auth: ' + data.error);
+                    return;
+                }
+
+                // Open auth URL in new tab
+                window.open(data.authUrl, '_blank');
+
+                // Show paste section
+                document.getElementById('codex-paste-section').style.display = 'block';
+                document.getElementById('codexCallbackUrl').focus();
+            } catch (e) {
+                showStatus('error', 'Failed to start auth: ' + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Sign in with ChatGPT';
+            }
+        }
+
+        async function completeChatGPTAuth() {
+            const callbackUrl = document.getElementById('codexCallbackUrl').value.trim();
+            if (!callbackUrl) {
+                showStatus('error', 'Please paste the redirect URL from your browser.');
+                return;
+            }
+
+            const btn = document.getElementById('codex-complete-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span>Completing sign-in...';
+
+            try {
+                const res = await fetch('/api/setup/codex-auth/complete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ callbackUrl })
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    showStatus('error', data.error);
+                    return;
+                }
+
+                // Success — update status display
+                const label = data.email
+                    ? `Connected as ${data.email}` + (data.planType ? ` (${data.planType})` : '')
+                    : 'Connected';
+                document.getElementById('codex-status-text').textContent = label;
+                document.getElementById('codex-status').style.display = 'block';
+
+                // Hide paste section
+                document.getElementById('codex-paste-section').style.display = 'none';
+                document.getElementById('codexCallbackUrl').value = '';
+
+                showStatus('success', 'ChatGPT authentication successful! Click Save Settings to apply.');
+            } catch (e) {
+                showStatus('error', 'Failed to complete auth: ' + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Complete Sign-in';
+            }
+        }
+
+        // Copy inline code text
+        function copyText(el) {
+            navigator.clipboard.writeText(el.textContent);
+            const orig = el.textContent;
+            el.textContent = 'Copied!';
+            el.style.color = '#00ff88';
+            setTimeout(() => { el.textContent = orig; el.style.color = ''; }, 1500);
+        }
+
+        // Load current settings on page load
+        async function loadSettings() {
+            try {
+                const res = await fetch('/api/setup/settings');
+                if (!res.ok) throw new Error('Failed to load');
+                const data = await res.json();
+
+                // Populate non-sensitive fields
+                if (data.proxyUser) {
+                    document.getElementById('proxyUser').value = data.proxyUser;
+                }
+                if (data.telegramUserId) {
+                    document.getElementById('telegramUserId').value = data.telegramUserId;
+                }
+
+                // Set active provider based on saved config
+                if (data.inferenceProvider) {
+                    selectProvider(data.inferenceProvider);
+                }
+
+                // Show ChatGPT OAuth status if connected
+                if (data.codexAuthStatus === 'connected' || data.codexAuthStatus === 'expired') {
+                    const label = data.codexAuthEmail
+                        ? `${data.codexAuthStatus === 'connected' ? 'Connected' : 'Expired'} — ${data.codexAuthEmail}` + (data.codexAuthPlan ? ` (${data.codexAuthPlan})` : '')
+                        : (data.codexAuthStatus === 'connected' ? 'Connected' : 'Expired — re-authenticate');
+                    const statusEl = document.getElementById('codex-status-text');
+                    statusEl.textContent = label;
+                    statusEl.style.color = data.codexAuthStatus === 'connected' ? '#00ff88' : '#ffcc00';
+                    document.getElementById('codex-status').style.display = 'block';
+                    // Change button text to re-authenticate
+                    document.getElementById('codex-signin-btn').textContent = 'Re-authenticate';
+                }
+
+                // Show masked indicators for set fields
+                if (data.anthropicApiKey) {
+                    document.getElementById('anthropicApiKey').placeholder = data.anthropicApiKey + ' (already set)';
+                }
+                if (data.openaiApiKey) {
+                    document.getElementById('openaiApiKey').placeholder = data.openaiApiKey + ' (already set)';
+                }
+                if (data.proxyPassword) {
+                    document.getElementById('proxyPassword').placeholder = '******** (already set)';
+                }
+                if (data.telegramBotToken) {
+                    document.getElementById('telegramBotToken').placeholder = data.telegramBotToken + ' (already set)';
+                }
+                if (data.deepgramApiKey) {
+                    document.getElementById('deepgramApiKey').placeholder = data.deepgramApiKey + ' (already set)';
+                }
+                if (data.braveSearchApiKey) {
+                    document.getElementById('braveSearchApiKey').placeholder = data.braveSearchApiKey + ' (already set)';
+                }
+            } catch (e) {
+                console.error('Failed to load settings:', e);
+            }
+        }
+
+        // Save settings
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<span class="spinner"></span>Saving...';
+
+            // Collect only non-empty fields
+            const settings = { inferenceProvider: currentProvider };
+            const fields = ['anthropicApiKey', 'openaiApiKey', 'proxyUser', 'proxyPassword',
+                           'telegramBotToken', 'telegramUserId',
+                           'deepgramApiKey', 'braveSearchApiKey'];
+
+            for (const field of fields) {
+                const value = document.getElementById(field).value.trim();
+                if (value) {
+                    settings[field] = value;
+                }
+            }
+
+            try {
+                const res = await fetch('/api/setup/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(settings)
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    // Show success panel with next steps
+                    document.getElementById('success-panel').classList.add('show');
+
+                    // Show telegram step if bot token was provided
+                    if (settings.telegramBotToken || document.getElementById('telegramBotToken').placeholder.includes('already set')) {
+                        document.getElementById('telegram-step').style.display = 'flex';
+                    }
+
+                    // Scroll to success panel
+                    document.getElementById('success-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                    // Clear sensitive fields after save
+                    document.getElementById('proxyPassword').value = '';
+                    document.getElementById('anthropicApiKey').value = '';
+                    document.getElementById('openaiApiKey').value = '';
+                    document.getElementById('telegramBotToken').value = '';
+                    document.getElementById('deepgramApiKey').value = '';
+                    document.getElementById('braveSearchApiKey').value = '';
+
+                    // Reload to update placeholders
+                    setTimeout(loadSettings, 500);
+                } else {
+                    showStatus('error', data.error || 'Failed to save settings');
+                }
+            } catch (e) {
+                showStatus('error', 'Failed to save: ' + e.message);
+            }
+
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Save Settings';
+        });
+
+        // Restart gateway
+        async function restartGateway() {
+            if (!confirm('Restart the OpenClaw gateway? Active sessions will be interrupted.')) {
+                return;
+            }
+
+            const btn = document.getElementById('restart-btn');
+            btn.disabled = true;
+            btn.textContent = 'Restarting...';
+
+            try {
+                const res = await fetch('/api/setup/restart-gateway', { method: 'POST' });
+                const data = await res.json();
+
+                if (data.success) {
+                    showStatus('success', 'Gateway restarted successfully.');
+                } else {
+                    showStatus('error', 'Restart failed: ' + (data.error || 'unknown error'));
+                }
+            } catch (e) {
+                showStatus('error', 'Failed to restart: ' + e.message);
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Restart Gateway';
+        }
+
+        // Show status message
+        function showStatus(type, message) {
+            statusEl.className = 'status show ' + type;
+            statusEl.textContent = message;
+
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusEl.classList.remove('show');
+                }, 5000);
+            }
+        }
+
+        // Load settings on page load
+        loadSettings();
+    </script>
+</body>
+</html>
