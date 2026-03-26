@@ -180,6 +180,16 @@ Add a volume to your Railway service:
 1. Right-click service → Add Volume
 2. Mount Path: `/data`
 
+### Public URL
+
+After deployment, you need to expose the service publicly:
+1. Go to your service → **Settings** → **Networking** → **Public Networking**
+2. Click **Generate Domain**
+3. Select port **8080**
+4. Click **Generate Domain**
+
+Without this, the instance is not accessible from the browser.
+
 ### Environment Variables
 
 Set this in Railway dashboard (Settings → Variables):
