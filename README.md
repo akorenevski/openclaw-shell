@@ -1,216 +1,202 @@
-# OpenClaw Deployment Guide
+# OpenClaw Shell with Easy Installer
 
-Deploy your personal AI assistant in minutes. Supports Railway, Coolify, and other container platforms.
-
----
-
-## Quick Start
-
-### 1. Deploy
-
-1. Deploy this repository to your container platform
-2. **Add a volume** mounted at `/data` for persistent storage
-3. Wait for deployment to complete
-
-### 2. Complete Setup
-
-Navigate to your service's public URL.
-
-**Default Login:**
-- Username: `admin`
-- Password: `admin`
-
-**CRITICAL:** Change the default password immediately on the Setup page. Anyone who discovers your URL can access your deployment with `admin/admin`.
+Easy installer and secure wrapper for self-hosted OpenClaw instances. One container, password-protected from the start, fully functional in minutes.
 
 ---
 
-## Pages
+## What is this?
 
-Your deployment provides these pages:
+OpenClaw Shell is a ready-to-deploy Docker package that gives you a fully working OpenClaw instance with a built-in setup utility and login protection. You deploy it, open the URL, go through a setup page in the browser, and your instance is ready to use.
 
-| Page | Path | Description |
-|------|------|-------------|
-| **Auth Gateway** | `/` | Login when unauthenticated, navigation hub when authenticated |
-| **Setup** | `/setup` | Configure credentials and API keys |
-| **Dashboard** | `/dashboard` | Native OpenClaw dashboard |
-| **Files** | `/files/` | Browse and manage files in `/data` volume |
-| **Public Pages** | `/pages/` | Publicly accessible content (no auth required) |
-| **Private App** | `/app/` | Auth-protected pages and tools (login required) |
-
-On a fresh install, you'll be redirected to the **Setup** page after login.
+This does not limit your OpenClaw instance in any way. You get full access to a standard OpenClaw installation - the shell just adds a layer on top that makes it password-protected and easier to get started with. No terminal access or manual config file editing required to get up and running.
 
 ---
 
-## Setup Page
+## What's included
 
-Enter your credentials on the Setup page:
+After deployment, your instance comes with four main screens - all accessible from a navigation page you land on after login.
 
-| Field | Description | How to Get |
-|-------|-------------|------------|
-| **Anthropic API Key** | Required for AI | Run `claude setup-token` or get from [console.anthropic.com](https://console.anthropic.com) |
-| **Username** | New login username | Change from default `admin` |
-| **Password** | New login password | Choose a strong password |
-| **Telegram Bot Token** | Optional | Get from [@BotFather](https://t.me/BotFather) |
-| **Telegram User ID** | Your Telegram user ID | Send `/start` to [@userinfobot](https://t.me/userinfobot) |
-| **Deepgram API Key** | Voice messages | Get from [console.deepgram.com](https://console.deepgram.com) |
-| **Brave Search API Key** | Web search | Get from [brave.com/search/api](https://brave.com/search/api) |
+### Login page
 
-Click **Save Settings**, then **Go to Dashboard**.
+<!-- TODO: screenshot of the login page -->
 
----
+Your instance is protected from the moment of deployment. No one can access anything without providing a username and password. On first launch, the default credentials are `admin` / `admin` - the setup page prompts you to change these immediately.
 
-## Telegram Setup
+### Navigation page
 
-If you provided a Telegram Bot Token and User ID in the Setup page, the bot is ready to use. Send a message to your bot and it will respond.
+<!-- TODO: screenshot of the navigation page -->
+
+After logging in, you land on a navigation page with buttons for **Dashboard**, **Files**, and **Setup** - so you can quickly get to any part of your instance.
+
+### Setup page (login-protected)
+
+<!-- TODO: screenshot of the setup page -->
+
+A web-based setup utility that lets you bootstrap your instance so it becomes usable. At its minimum, all you need is to change the password and provide an inference provider - after that, your instance can talk to you and you can configure everything else by chatting with it. Additionally, the setup page offers a few optional integrations for convenience:
+
+**Required:**
+
+- **Username & password** - replace the default `admin/admin` credentials
+- **Inference provider** - connect one of the supported AI providers to power your instance:
+  1. **ChatGPT subscription** - use your existing ChatGPT Plus/Pro subscription via the OpenAI-compatible API
+  2. **OpenAI API** - connect with an OpenAI API key
+  3. **Anthropic API** - connect with an Anthropic API key
+
+**Optional:**
+
+- **Telegram bot token + user ID** - connect a Telegram bot so you can message your OpenClaw instance directly from Telegram. Once configured, the bot is immediately functional - just send it a message
+- **Deepgram API key** - enables voice messages, so you can speak with your instance instead of just typing
+- **Brave Search API key** - gives your instance web search capability
+
+Cron is activated and configured automatically during setup.
+
+After saving your settings, click **Go to Dashboard** and your instance is fully operational.
+
+### OpenClaw dashboard (login-protected)
+
+<!-- TODO: screenshot of the dashboard -->
+
+The native OpenClaw dashboard, accessible at `/dashboard`. This is the standard OpenClaw interface where you interact with your instance - chat, manage skills, configure channels, and everything else OpenClaw offers. The dashboard is the same as what you'd get with a standalone OpenClaw installation, just wrapped behind the login protection that OpenClaw Shell provides.
+
+### File browser (login-protected)
+
+<!-- TODO: screenshot of the file browser -->
+
+A web-based file manager accessible at `/files/`. Browse, upload, download, and edit files in your `/data` volume directly from the browser. Useful for inspecting workspace files, managing skills, or editing configuration without needing terminal access.
 
 ---
 
 ## Features
 
-### Public Pages
+OpenClaw Shell provides these persistent capabilities:
 
-Create publicly accessible web content without authentication:
-- Ask OpenClaw to create landing pages, forms, dashboards
-- Files go to `/data/workspace/pages/`
-- Access at `https://your-domain/pages/`
+### Authentication gateway
 
-### Private App
+All access to your instance goes through a password-protected auth layer. The login page, dashboard, file browser, setup page, and private pages all require authentication. This is always active and cannot be bypassed.
 
-Auth-protected pages for personal tools and dashboards:
-- Files go to `/data/workspace/app/`
-- Access at `https://your-domain/app/` (requires login)
-- Backend API available at `/app-api/` (proxied to the same handler as `/pages-api/`, but with authentication context)
+### Public pages
 
-### Browser Automation
+Your instance can create and serve publicly accessible web content at `/pages/`. Ask your OpenClaw instance to create landing pages, forms, or dashboards - they'll be available to anyone without login. Files are stored in `/data/workspace/pages/`. A backend API is available at `/pages-api/` for server-side logic.
 
-Headless Chromium is pre-installed for web scraping:
-- Visit and analyze JavaScript-heavy pages
-- Take screenshots
-- Extract data from dynamic content
+### Private pages
 
-### File Browser
+Auth-protected pages and tools at `/app/`. Same as public pages but require login to access. Files are stored in `/data/workspace/app/`. Backend API available at `/app-api/` with authentication context, so your private pages can build features that know who's logged in.
 
-Access the `/data` volume via web at `/files/`:
-- Browse, upload, download files
-- Edit configuration directly
+### Headless Chrome browser
+
+Pre-installed Chromium for web scraping and browser automation. Your OpenClaw instance can visit and analyze JavaScript-heavy pages, take screenshots, and extract data from dynamic content - all without needing to install anything extra.
+
+### Git backups
+
+Automated backup of your workspace and configuration to a private GitHub repository. Once configured, your instance pushes snapshots on a schedule you choose (daily, hourly, weekly, or custom). See [GitHub backup setup](#github-backup-setup) for instructions.
+
+### Pre-configured cron
+
+Cron is set up and enabled out of the box. Your OpenClaw instance can schedule reminders, recurring tasks, and other time-based operations without any additional configuration.
 
 ---
 
-## GitHub Backup Setup
+## Deploy
 
-Set up automated git backups to preserve your configuration and workspace.
+This project is primarily built for and tested on [Railway](https://railway.com?referralCode=2L3MjM) (referral link - gives us both credits). However, it works on **any platform that can deploy from a Dockerfile and provision a public URL** - Coolify, Render, fly.io, or a plain VPS with Docker.
 
-### Step 1: Create GitHub Repository
+### Railway (recommended)
+
+1. Fork this repo and connect it to a new Railway service
+2. Add a volume mounted at `/data`
+3. Set environment variable: `RAILWAY_RUN_UID="0"` (Railway runs containers as non-root by default, which breaks volume write permissions - this overrides that)
+4. Go to **Settings → Networking → Public Networking**, generate a domain on port **8080**
+5. Open your public URL
+
+### Other platforms
+
+1. Deploy this repository (or build the Dockerfile)
+2. Mount a persistent volume at `/data`
+3. Expose port **8080** with a public URL
+4. Open your public URL
+
+---
+
+## First-run setup
+
+When you open your instance for the first time, log in with the default credentials:
+
+- Username: `admin`
+- Password: `admin`
+
+You'll be redirected to the **Setup page** where you configure:
+
+| Field | Required? | Description |
+|-------|-----------|-------------|
+| **Username & Password** | Yes | Replace the default `admin/admin` immediately |
+| **Inference Provider** | Yes | ChatGPT subscription, OpenAI API key, or Anthropic API key |
+| **Telegram Bot Token + User ID** | Optional | Connect a Telegram bot. Token from [@BotFather](https://t.me/BotFather), ID from [@userinfobot](https://t.me/userinfobot) |
+| **Deepgram API Key** | Optional | Voice message support. [console.deepgram.com](https://console.deepgram.com) |
+| **Brave Search API Key** | Optional | Web search capability. [brave.com/search/api](https://brave.com/search/api) |
+
+Click **Save Settings**, then **Go to Dashboard**. Your OpenClaw instance is ready.
+
+> **Important:** Change the default password immediately. Anyone who discovers your URL can access your instance with `admin/admin` until you do.
+
+---
+
+## Pages overview
+
+| Page | Path | Description |
+|------|------|-------------|
+| **Login** | `/` | Password-protected entry point |
+| **Navigation** | `/` (after login) | Buttons for Dashboard, Files, and Setup |
+| **Setup** | `/setup` | Credentials, API keys, and integration configuration |
+| **Dashboard** | `/dashboard` | Native OpenClaw dashboard |
+| **Files** | `/files/` | Web-based file browser for `/data` |
+| **Public Pages** | `/pages/` | Publicly accessible content (no auth required) |
+| **Private Pages** | `/app/` | Auth-protected pages and tools |
+
+---
+
+## GitHub backup setup
+
+Set up automated git backups to preserve your workspace and configuration.
+
+### Step 1: Create a private GitHub repo
 
 1. Go to [github.com/new](https://github.com/new)
-2. Create a new **private** repository (e.g., `openclaw-backup`)
-3. **Do not** add README, .gitignore, or license
-4. Copy the **SSH URL**: `git@github.com:YOUR_USERNAME/REPO_NAME.git`
+2. Create a **private** repository (e.g., `openclaw-backup`)
+3. Do not add README, .gitignore, or license
+4. Copy the SSH URL: `git@github.com:YOUR_USERNAME/REPO_NAME.git`
 
-### Step 2: Give Repository URL to Agent
+### Step 2: Ask your OpenClaw instance to set it up
 
-Tell your agent:
-
-```
-You: Please set up GitHub backup for this deployment.
-     Repository: git@github.com:YOUR_USERNAME/REPO_NAME.git
-
-Agent: I'll set up GitHub backup. First, I need to generate SSH keys...
-       [generates keys]
-       Here's your public SSH key:
-
-       ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... deploy-key
-
-       Please add this as a deploy key to your GitHub repository.
-```
-
-### Step 3: Add Deploy Key to GitHub
-
-1. Go to your repository → **Settings** → **Deploy keys**
-2. Click **Add deploy key**
-3. **Title**: `OpenClaw Deploy Key`
-4. **Key**: Paste the public key the agent gave you
-5. Check **"Allow write access"** (required for git push)
-6. Click **Add key**
-
-### Step 4: Confirm and Set Backup Schedule
-
-Tell your agent the key is added:
+Just tell your instance in the chat:
 
 ```
-You: I've added the deploy key to GitHub. Please make the first backup.
-     I want backups to run daily at midnight.
+You: Set up GitHub backup. Repo: git@github.com:YOUR_USERNAME/REPO_NAME.git
 
-Agent: Deploy key confirmed! Making initial commit and pushing to GitHub...
-       [creates initial commit]
-       Backup complete! Setting up daily automated backups...
+OpenClaw: I'll generate SSH keys...
+          Here's your public key:
+          ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... deploy-key
+          Add this as a deploy key to your GitHub repo.
 ```
 
-**Backup Frequency Options**:
-- `daily` - once every 24 hours (recommended)
-- `hourly` - once every hour
-- `weekly` - once every 7 days
-- Custom: "every 6 hours", "twice a day", etc.
+### Step 3: Add deploy key to GitHub
 
-### What Gets Backed Up
+1. Repository → **Settings** → **Deploy keys** → **Add deploy key**
+2. Paste the public key, check **"Allow write access"**
+3. Tell your instance the key is added, and set your backup frequency (daily, hourly, weekly, or custom)
 
-**Included**:
-- Workspace files (`/data/workspace/`)
-- Agent configurations (sanitized)
-- Skills
-- Public pages
-- Git-friendly config snapshots
+### What gets backed up
 
-**Excluded** (via `.gitignore`):
-- Secrets (API keys, tokens)
-- Credentials
-- Browser profiles
-- Session data
-- Database files
+All of the OpenClaw identity and user data is backed up.
+
+**Excluded:** secrets, API keys, credentials, browser profiles, session data.
 
 ---
 
-## Railway Deployment
+## Technical reference
 
-When deploying to Railway specifically:
+### File locations
 
-### Volume Setup
-
-Add a volume to your Railway service:
-1. Right-click service → Add Volume
-2. Mount Path: `/data`
-
-### Public URL
-
-After deployment, you need to expose the service publicly:
-1. Go to your service → **Settings** → **Networking** → **Public Networking**
-2. Click **Generate Domain**
-3. Select port **8080**
-4. Click **Generate Domain**
-
-Without this, the instance is not accessible from the browser.
-
-### Environment Variables
-
-Set this in Railway dashboard (Settings → Variables):
-
-```
-RAILWAY_RUN_UID="0"
-```
-
-This is required for Railway volume permissions. No other environment variables are needed — everything else is configured via the Setup page or has defaults in the Dockerfile.
-
----
-
-## Other Platforms (Coolify, etc.)
-
-No environment variables are required. Just ensure your platform mounts a persistent volume at `/data`.
-
----
-
-## Technical Reference
-
-### File Locations
+All paths below are relative to `/data`, which is expected to be a persistent volume mounted into the container. It is important to have this volume mounted - otherwise all data will be lost when the instance is updated or restarted.
 
 | Path | Description |
 |------|-------------|

@@ -152,7 +152,7 @@
             color: #ffcc00;
         }
 
-        /* Success panel with next steps */
+        /* Success panel (temporary banner) */
         .success-panel {
             display: none;
             background: rgba(0, 255, 136, 0.05);
@@ -160,8 +160,11 @@
             border-radius: 20px;
             padding: 1.5rem;
             margin-bottom: 1.25rem;
+            transition: opacity 0.5s ease, max-height 0.5s ease, padding 0.5s ease, margin 0.5s ease;
+            overflow: hidden;
         }
-        .success-panel.show { display: block; }
+        .success-panel.show { display: block; opacity: 1; }
+        .success-panel.fade { opacity: 0; max-height: 0; padding: 0 1.5rem; margin-bottom: 0; }
         .success-panel h2 {
             color: #00ff88;
             font-size: 1.25rem;
@@ -170,54 +173,10 @@
             align-items: center;
             gap: 0.5rem;
         }
-        .next-steps {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-        .next-steps li {
-            padding: 0.75rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-        }
-        .next-steps li:last-child { border-bottom: none; }
-        .step-number {
-            width: 24px;
-            height: 24px;
-            background: rgba(0, 217, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #00d9ff;
-            flex-shrink: 0;
-        }
-        .step-content {
-            flex: 1;
-        }
-        .step-content strong {
-            display: block;
-            margin-bottom: 0.25rem;
-        }
-        .step-content p {
-            color: #666;
-            font-size: 0.85rem;
-            margin: 0;
-        }
-        .step-content code {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-        }
         .action-buttons {
             display: flex;
             gap: 0.75rem;
-            margin-top: 1.25rem;
+            margin-bottom: 1.25rem;
         }
         .action-buttons a, .action-buttons button {
             flex: 1;
@@ -348,32 +307,16 @@
 
         <div id="status-message" class="status"></div>
 
-        <!-- Success panel with next steps -->
+        <!-- Success banner (temporary) -->
         <div id="success-panel" class="success-panel">
             <h2>✅ Settings Saved!</h2>
-            <p style="color: #888; margin-bottom: 1rem;">Your gateway is configured and ready to use.</p>
+            <p style="color: #888; margin: 0;">Your gateway is configured and ready to use.</p>
+        </div>
 
-            <ol class="next-steps">
-                <li>
-                    <span class="step-number">1</span>
-                    <div class="step-content">
-                        <strong>Open the Dashboard</strong>
-                        <p>You're already logged in. Just click below!</p>
-                    </div>
-                </li>
-                <li id="telegram-step" style="display: none;">
-                    <span class="step-number">2</span>
-                    <div class="step-content">
-                        <strong>Connect Telegram</strong>
-                        <p>Message your bot, then: <code>openclaw pairing approve telegram &lt;code&gt;</code></p>
-                    </div>
-                </li>
-            </ol>
-
-            <div class="action-buttons">
-                <a href="/dashboard/" class="btn-dashboard" id="dashboard-link">Go to Dashboard</a>
-                <a href="/files/" class="btn-files">Browse Files</a>
-            </div>
+        <!-- Always-visible navigation buttons -->
+        <div class="action-buttons">
+            <a href="/dashboard/" class="btn-dashboard" id="dashboard-link">Go to Dashboard</a>
+            <a href="/files/" class="btn-files">Browse Files</a>
         </div>
 
         <form id="setup-form">
@@ -716,16 +659,22 @@
                 const data = await res.json();
 
                 if (data.success) {
-                    // Show success panel with next steps
-                    document.getElementById('success-panel').classList.add('show');
+                    // Show temporary success banner
+                    const successPanel = document.getElementById('success-panel');
+                    successPanel.classList.remove('fade');
+                    successPanel.classList.add('show');
+                    successPanel.style.maxHeight = successPanel.scrollHeight + 'px';
 
-                    // Show telegram step if bot token was provided
-                    if (settings.telegramBotToken || document.getElementById('telegramBotToken').placeholder.includes('already set')) {
-                        document.getElementById('telegram-step').style.display = 'flex';
-                    }
+                    // Scroll to top
+                    successPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-                    // Scroll to success panel
-                    document.getElementById('success-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // Fade out and collapse after 4 seconds
+                    setTimeout(() => {
+                        successPanel.classList.add('fade');
+                        successPanel.addEventListener('transitionend', () => {
+                            successPanel.classList.remove('show', 'fade');
+                        }, { once: true });
+                    }, 4000);
 
                     // Clear sensitive fields after save
                     document.getElementById('proxyPassword').value = '';
