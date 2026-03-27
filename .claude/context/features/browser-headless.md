@@ -29,6 +29,6 @@ OpenClaw uses `playwright-core`, NOT the full `playwright` package. This is corr
 
 ## References
 
-- `.docs/openclaw/tools/browser.md` — Browser tool documentation
-- `.docs/openclaw/install/docker.md` — Docker install tips
-- `.docs/openclaw/tools/browser-linux-troubleshooting.md` — Linux troubleshooting
+- `docs/tools/browser.md` — Browser tool documentation
+- `docs/install/docker.md` — Docker install tips
+- `docs/tools/browser-linux-troubleshooting.md` — Linux troubleshooting

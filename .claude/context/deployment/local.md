@@ -55,7 +55,7 @@ Can skip local testing for: minor skill edits, documentation, dependency version
 ## Troubleshooting
 
 - **Port 8081 in use**: Change the host port mapping in `docker-compose.local.yml`
-- **Build OOM**: Increase Docker Desktop memory to 4GB+, or use `NODE_OPTIONS="--max-old-space-size=3072"` (already set in Dockerfile)
+- **Build OOM**: Increase Docker Desktop memory to 4GB+. Production runtime uses `NODE_OPTIONS="--max-old-space-size=1536"` (set in Dockerfile)
 - **Chromium errors**: Check container logs for browser-related errors
 
 ## Backup / Restore Volume
