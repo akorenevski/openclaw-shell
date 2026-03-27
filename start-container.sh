@@ -165,7 +165,7 @@ rm -f /data/.openclaw/browser/*/user-data/SingletonLock \
       /data/.openclaw/browser/*/user-data/SingletonSocket \
       /data/.openclaw/browser/*/user-data/SingletonCookie 2>/dev/null || true
 
-# Patch: trusted-proxy shared-secret fallback (upstream PR #17746, not yet merged)
+# Patch: trusted-proxy shared-secret fallback (upstream PR #17746 closed, superseded by PR #54536 — still open)
 # When trusted-proxy auth fails (no x-forwarded-user), fall through to token/password auth
 # instead of returning failure. This lets internal services (cron, agent backend) authenticate
 # via OPENCLAW_GATEWAY_TOKEN while browser connections use trusted-proxy via auth-proxy.
@@ -217,6 +217,43 @@ node -e "
         }
     }
     if (patched === 0) console.log('[patch] No files needed patching (already patched or pattern changed)');
+"
+
+# Patch: loopback trusted-proxy client IP resolution
+# When 127.0.0.1 is both the remote address AND a trusted proxy, resolveClientIp tries to
+# extract the real client from forwarded headers. If none exist (direct localhost connection),
+# it returns undefined — causing isLocalDirectRequest to return false. This breaks internal
+# services (cron, CLI) that connect directly to the gateway without going through the auth-proxy.
+# Fix: if the remote is a loopback trusted proxy with no forwarded-for header, return remote.
+# Idempotent — no-op if already patched or if the code pattern changes.
+node -e "
+    const fs = require('fs');
+    const path = require('path');
+    const distDir = '/app/dist';
+    const files = fs.readdirSync(distDir).filter(f => f.endsWith('.js'));
+    let patched = 0;
+    for (const file of files) {
+        const fp = path.join(distDir, file);
+        let code = fs.readFileSync(fp, 'utf-8');
+
+        if (!code.includes('function resolveClientIp(params)')) continue;
+        if (code.includes('/* loopback-trusted-proxy-patched */')) { console.log('[patch] Already patched (loopback): ' + file); continue; }
+
+        // Pattern: when remote is a trusted proxy and forwardedIp is null,
+        // return remote if it's a loopback address (direct local connection, not proxied)
+        const target = 'if (forwardedIp) return forwardedIp;';
+        if (code.includes(target)) {
+            code = code.replace(target,
+                'if (forwardedIp) return forwardedIp; /* loopback-trusted-proxy-patched */ if (!params.forwardedFor && (remote === \"127.0.0.1\" || remote === \"::1\")) return remote;'
+            );
+            fs.writeFileSync(fp, code);
+            patched++;
+            console.log('[patch] Applied loopback trusted-proxy fix to ' + file);
+        } else {
+            console.log('[patch] WARNING: ' + file + ' has resolveClientIp but pattern not matched');
+        }
+    }
+    if (patched === 0) console.log('[patch] No files needed loopback patching (already patched or pattern changed)');
 "
 
 exec supervisord -c /app/supervisord.conf

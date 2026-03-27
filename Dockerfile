@@ -14,7 +14,7 @@
 FROM node:22-bookworm AS builder
 
 # Build argument for pinning to a specific version/commit
-ARG OPENCLAW_GIT_REF=v2026.3.12
+ARG OPENCLAW_GIT_REF=v2026.3.24
 
 # Install build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
