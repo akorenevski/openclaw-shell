@@ -18,19 +18,19 @@ After deployment, your instance comes with four main screens - all accessible fr
 
 ### Login page
 
-<!-- TODO: screenshot of the login page -->
+<img src="docs/images/login.png" width="400">
 
 Your instance is protected from the moment of deployment. No one can access anything without providing a username and password. On first launch, the default credentials are `admin` / `admin` - the setup page prompts you to change these immediately.
 
 ### Navigation page
 
-<!-- TODO: screenshot of the navigation page -->
+<img src="docs/images/navigation.png" width="500">
 
 After logging in, you land on a navigation page with buttons for **Dashboard**, **Files**, and **Setup** - so you can quickly get to any part of your instance.
 
 ### Setup page (login-protected)
 
-<!-- TODO: screenshot of the setup page -->
+<img src="docs/images/setup.png" width="500">
 
 A web-based setup utility that lets you bootstrap your instance so it becomes usable. At its minimum, all you need is to change the password and provide an inference provider - after that, your instance can talk to you and you can configure everything else by chatting with it. Additionally, the setup page offers a few optional integrations for convenience:
 
@@ -54,13 +54,13 @@ After saving your settings, click **Go to Dashboard** and your instance is fully
 
 ### OpenClaw dashboard (login-protected)
 
-<!-- TODO: screenshot of the dashboard -->
+<!-- No screenshot available yet -->
 
 The native OpenClaw dashboard, accessible at `/dashboard`. This is the standard OpenClaw interface where you interact with your instance - chat, manage skills, configure channels, and everything else OpenClaw offers. The dashboard is the same as what you'd get with a standalone OpenClaw installation, just wrapped behind the login protection that OpenClaw Shell provides.
 
 ### File browser (login-protected)
 
-<!-- TODO: screenshot of the file browser -->
+<img src="docs/images/files.png" width="600">
 
 A web-based file manager accessible at `/files/`. Browse, upload, download, and edit files in your `/data` volume directly from the browser. Useful for inspecting workspace files, managing skills, or editing configuration without needing terminal access.
 
