@@ -1,4 +1,4 @@
-# OpenClaw Shell with Easy Installer
+# OpenClaw in Secure Shell
 
 Easy installer and secure wrapper for self-hosted OpenClaw instances. One container, password-protected from the start, fully functional in minutes.
 
