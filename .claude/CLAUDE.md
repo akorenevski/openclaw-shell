@@ -1,8 +1,8 @@
-# OpenClaw Shell — Self-Hosted AI Deployment System
+# OpenClaw Secure Shell
 
 ## What This Is
 
-A ready-to-deploy Docker image for self-hosting [OpenClaw](https://github.com/openclaw/openclaw) with an auth proxy (nginx + basic auth), headless browser, file browser, and skill management. One container, zero configuration.
+A ready-to-deploy Docker image for self-hosting [OpenClaw](https://github.com/openclaw/openclaw) with a Node.js auth proxy (form-based login), headless browser, file browser, and skill management. One container, zero configuration.
 
 ## Documentation Language Policy
 
@@ -19,7 +19,8 @@ openclaw-shell/
 ├── skills/                   # Core skills, deployed to all instances
 │   ├── pages/
 │   └── pages-backend/
-├── auth-proxy/               # Nginx auth wrapper (index.cjs, setup-api.cjs, setup.html)
+├── auth-proxy/               # Node.js auth proxy (index.cjs, setup-api.cjs, setup.html)
+├── backend/                  # Pages-api server (server.cjs) — serves /pages-api/ and /app-api/
 ├── start-container.sh        # Startup orchestrator — THE source of truth for config
 ├── git-init.sh               # Git + SSH setup for automated backups
 ├── Dockerfile                # Build definition
@@ -47,7 +48,7 @@ All infrastructure config is enforced by `start-container.sh` on every boot. Do 
 4. Removes deprecated skills, installs/updates bundled skills from `skills/`
 5. Enforces infrastructure settings in `openclaw.json`
 6. Applies runtime patches (e.g., trusted-proxy auth fallback)
-7. Starts supervisord (nginx + OpenClaw gateway + FileBrowser)
+7. Starts supervisord (auth-proxy + OpenClaw gateway + pages-api + FileBrowser)
 
 ---
 

@@ -16,7 +16,7 @@ These skills are core to the platform — they enable agents to build interactiv
 - Skills are defined as `SKILL.md` files in `skills/pages/` and `skills/pages-backend/` in this repo
 - On every container boot, `start-container.sh` copies them to `/data/workspace/skills/`
 - Skills are always updated to the latest repo version on deployment
-- Pages are served by the auth-proxy nginx config at `/pages/` (static) and `/pages-api/` (backend)
+- Pages are served by the auth-proxy Node.js proxy at `/pages/` (static) and `/pages-api/` (backend)
 - Backend handlers live in `/data/workspace/pages-api/*.js` and hot-reload automatically
 
 ## Skill Lifecycle

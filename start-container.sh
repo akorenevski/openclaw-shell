@@ -66,7 +66,7 @@ node -e "
 
     // Network configuration - REQUIRED for Railway reverse proxy
     config.gateway = config.gateway || {};
-    config.gateway.port = 8082;              // nginx expects this port
+    config.gateway.port = 8082;              // auth-proxy expects this port
     config.gateway.bind = 'loopback';        // CRITICAL: localhost only for security
     config.gateway.mode = 'local';           // Local deployment mode
     config.gateway.trustedProxies = ['127.0.0.1'];  // Required for loopback connections

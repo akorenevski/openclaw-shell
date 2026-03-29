@@ -1,11 +1,12 @@
 # =============================================================================
-# OpenClaw Railway Deployment - With Auth Proxy and File Browser
+# OpenClaw Secure Shell
 # =============================================================================
-# This Dockerfile builds OpenClaw with:
+# Builds OpenClaw with:
 # - Node.js auth proxy with form-based login
 # - FileBrowser for /data volume access
+# - Pages-api backend server
 # - OpenClaw gateway
-# All managed by supervisord on a single port.
+# All managed by supervisord on a single port. Platform-agnostic.
 # =============================================================================
 
 # -----------------------------------------------------------------------------

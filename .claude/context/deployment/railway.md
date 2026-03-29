@@ -23,7 +23,7 @@ Railway auto-deploys on git push to the configured branch. Uses the Dockerfile f
 ### Networking
 
 - Railway provides automatic HTTPS with SSL termination
-- The container exposes port 8080 (nginx)
+- The container exposes port 8080 (auth-proxy)
 - Railway's proxy forwards traffic to the container's exposed port
 - `RAILWAY_PUBLIC_DOMAIN` env var is available at runtime for CORS configuration
 
