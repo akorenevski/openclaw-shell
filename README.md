@@ -1,12 +1,6 @@
-# OpenClaw in Secure Shell
+# OpenClaw Secure Shell
 
-Easy installer and secure wrapper for self-hosted OpenClaw instances. One container, password-protected from the start, fully functional in minutes.
-
----
-
-## What is this?
-
-OpenClaw Shell is a ready-to-deploy Docker package that gives you a fully working OpenClaw instance with a built-in setup utility and login protection. You deploy it, open the URL, go through a setup page in the browser, and your instance is ready to use.
+OpenClaw Secure Shell is a Docker package that gives you a fully working OpenClaw instance with a built-in setup utility and login protection. You deploy it, open the URL, select an inference provider, set the password, and your instance is ready to use.
 
 This does not limit your OpenClaw instance in any way. You get full access to a standard OpenClaw installation - the shell just adds a layer on top that makes it password-protected and easier to get started with. No terminal access or manual config file editing required to get up and running.
 
