@@ -22,6 +22,8 @@ openclaw-shell/
 ├── auth-proxy/               # Node.js auth proxy (index.cjs, setup-api.cjs, setup.html)
 ├── backend/                  # Pages-api server (server.cjs) — serves /pages-api/ and /app-api/
 ├── start-container.sh        # Startup orchestrator — THE source of truth for config
+├── run-migrations.sh         # One-time data migrations runner
+├── migrations/               # Numbered migration scripts (run once per instance)
 ├── install-vps.sh            # VPS installer — Docker + Caddy + auto-HTTPS on bare Linux
 ├── git-init.sh               # Git + SSH setup for automated backups
 ├── Dockerfile                # Build definition
@@ -79,6 +81,8 @@ Feature documentation lives in `.claude/context/features/`. Each file describes 
 - `skills-pages.md` — Pages and pages-backend core skills
 - `project-data-sync.md` — Local/cloud workspace synchronization via Git
 - `vps-deployment.md` — Direct-to-server deployment with Docker + Caddy auto-HTTPS
+- `file-browser.md` — Web-based file manager for /data volume
+- `monitoring.md` — Health checks, heartbeat, supervisord, what's not monitored
 
 ---
 
@@ -112,6 +116,5 @@ See `.claude/context/deployment/local.md` for details.
 
 ## TODO / Future Improvements
 
-- [ ] **Versioned migrations system** — Instance-level changes are currently inline in `start-container.sh`. Future: versioned migrations tracked per instance via `/data/.openclaw/migrations-applied.json`.
-- [ ] Document FileBrowser setup as a feature
-- [ ] Add monitoring/health check details
+- [x] **Versioned migrations system** — Implemented in `run-migrations.sh` + `migrations/` directory. Tracked per instance via `/data/.openclaw/migrations-applied.json`.
+- [x] **Monitoring/health check docs** — Documented in `.claude/context/features/monitoring.md`

@@ -27,15 +27,8 @@ export AUTH_SECRET="${AUTH_SECRET:-$(openssl rand -hex 32)}"
 # Gateway token: still generate for CLI/API use, but auth mode is trusted-proxy
 export OPENCLAW_GATEWAY_TOKEN="${OPENCLAW_GATEWAY_TOKEN:-$(openssl rand -base64 32 | tr -d '/+=' | head -c 43)}"
 
-# Remove deprecated skills from previous versions
-# (ensures all instances converge to current skill set)
-deprecated_skills="pages-api public-pages"
-for skill_name in $deprecated_skills; do
-    if [ -d "/data/workspace/skills/$skill_name" ]; then
-        echo "Removing deprecated skill: $skill_name"
-        rm -rf "/data/workspace/skills/$skill_name"
-    fi
-done
+# Run one-time data migrations (tracked in /data/.openclaw/migrations-applied.json)
+/app/run-migrations.sh
 
 # Install bundled skills (always update to latest version)
 if [ -d "/app/skills" ]; then

@@ -15,7 +15,7 @@
 FROM node:22-bookworm AS builder
 
 # Build arguments
-ARG OPENCLAW_GIT_REF=v2026.3.24
+ARG OPENCLAW_GIT_REF=v2026.4.1
 ARG SHELL_VERSION=dev
 
 # Install build dependencies
@@ -116,11 +116,13 @@ COPY --from=builder /build/docs ./docs
 # Copy configuration files
 COPY supervisord.conf /app/supervisord.conf
 COPY start-container.sh /app/start-container.sh
+COPY run-migrations.sh /app/run-migrations.sh
+COPY migrations /app/migrations
 COPY git-init.sh /app/git-init.sh
 COPY auth-proxy /app/auth-proxy
 COPY backend /app/backend
 COPY skills /app/skills
-RUN chmod +x /app/start-container.sh /app/git-init.sh
+RUN chmod +x /app/start-container.sh /app/run-migrations.sh /app/git-init.sh
 
 # Create wrapper script for easy CLI access
 RUN echo '#!/bin/bash\nexec node /app/dist/index.js "$@"' > /usr/local/bin/openclaw \
