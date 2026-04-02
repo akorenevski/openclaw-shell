@@ -547,6 +547,29 @@ function saveSettings(settings, origin = null) {
         };
     }
 
+    // Sync Anthropic API key to models.providers if that section exists
+    // (setup page writes to env.ANTHROPIC_API_KEY, but gateway may read from models.providers.anthropic.apiKey)
+    if (settings.anthropicApiKey) {
+        const existingProviders = existingConfig?.models?.providers?.anthropic;
+        if (existingProviders) {
+            configUpdates.models = configUpdates.models || {};
+            configUpdates.models.providers = configUpdates.models.providers || {};
+            configUpdates.models.providers.anthropic = configUpdates.models.providers.anthropic || {};
+            configUpdates.models.providers.anthropic.apiKey = settings.anthropicApiKey;
+        }
+    }
+
+    // Sync OpenAI API key to models.providers if that section exists
+    if (settings.openaiApiKey) {
+        const existingProviders = existingConfig?.models?.providers?.openai;
+        if (existingProviders) {
+            configUpdates.models = configUpdates.models || {};
+            configUpdates.models.providers = configUpdates.models.providers || {};
+            configUpdates.models.providers.openai = configUpdates.models.providers.openai || {};
+            configUpdates.models.providers.openai.apiKey = settings.openaiApiKey;
+        }
+    }
+
     // Write config (gateway hot-reloads openclaw.json automatically)
     writeConfig(configUpdates);
 
