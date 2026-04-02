@@ -81,12 +81,8 @@ node -e "
     config.gateway.auth.mode = 'trusted-proxy';
     config.gateway.auth.trustedProxy = config.gateway.auth.trustedProxy || {};
     config.gateway.auth.trustedProxy.userHeader = 'x-forwarded-user';
-    // Also keep gateway token as fallback for internal connections (cron, agent backend)
-    // PR #17746: trusted-proxy falls back to token auth when x-forwarded-user is missing
-    const gwToken = process.env.OPENCLAW_GATEWAY_TOKEN;
-    if (gwToken) {
-        config.gateway.auth.token = gwToken;
-    }
+    // v2026.4.1: trusted-proxy and token auth are mutually exclusive — remove token
+    delete config.gateway.auth.token;
 
     // Browser configuration - REQUIRED for Playwright/Chromium in Docker
     config.browser = config.browser || {};
