@@ -24,8 +24,9 @@ export PROXY_USER="${PROXY_USER:-admin}"
 export PROXY_PASSWORD="${PROXY_PASSWORD:-admin}"
 export AUTH_SECRET="${AUTH_SECRET:-$(openssl rand -hex 32)}"
 
-# Gateway token: still generate for CLI/API use, but auth mode is trusted-proxy
-export OPENCLAW_GATEWAY_TOKEN="${OPENCLAW_GATEWAY_TOKEN:-$(openssl rand -base64 32 | tr -d '/+=' | head -c 43)}"
+# v2026.4.1: trusted-proxy mode is mutually exclusive with token auth
+# Do NOT set OPENCLAW_GATEWAY_TOKEN — gateway will reject it
+unset OPENCLAW_GATEWAY_TOKEN 2>/dev/null || true
 
 # Run one-time data migrations (tracked in /data/.openclaw/migrations-applied.json)
 /app/run-migrations.sh
