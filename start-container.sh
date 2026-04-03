@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+# Performance: Node compile cache + disable self-respawn overhead
+export NODE_COMPILE_CACHE=/var/tmp/openclaw-compile-cache
+mkdir -p "$NODE_COMPILE_CACHE"
+export OPENCLAW_NO_RESPAWN=1
+
 # Ensure data directories exist (including browser profiles)
 mkdir -p /data/.openclaw /data/workspace /data/workspace/skills /data/workspace/pages /data/workspace/app /data/.openclaw/browser
 
