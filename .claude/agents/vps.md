@@ -95,7 +95,7 @@ Report findings to the user (OS, RAM, disk) and confirm they want to proceed. Th
 **Step 1 — Start the install in the background on the server:**
 
 ```bash
-ssh root@<IP> 'nohup bash -c "curl -fsSL https://raw.githubusercontent.com/ai-cluster-one/openclaw-shell/main/install-vps.sh | bash -s -- --domain <DOMAIN> --yes" > /tmp/openclaw-install.log 2>&1 &'
+ssh root@<IP> 'nohup bash -c "curl -fsSL https://raw.githubusercontent.com/akorenevski/openclaw-shell/main/install-vps.sh | bash -s -- --domain <DOMAIN> --yes" > /tmp/openclaw-install.log 2>&1 &'
 ```
 
 The `--yes` flag skips the interactive confirmation (the agent has already confirmed with the user). The `--domain` flag skips the interactive domain prompt.

@@ -5,13 +5,13 @@
 From your local machine (or any machine with SSH access to the server):
 
 ```bash
-ssh root@your-server 'curl -fsSL https://raw.githubusercontent.com/ai-cluster-one/openclaw-shell/main/install-vps.sh | bash'
+ssh root@your-server 'curl -fsSL https://raw.githubusercontent.com/akorenevski/openclaw-shell/main/install-vps.sh | bash'
 ```
 
 Or with a domain pre-configured:
 
 ```bash
-ssh root@your-server 'curl -fsSL https://raw.githubusercontent.com/ai-cluster-one/openclaw-shell/main/install-vps.sh | bash -s -- --domain openclaw.example.com'
+ssh root@your-server 'curl -fsSL https://raw.githubusercontent.com/akorenevski/openclaw-shell/main/install-vps.sh | bash -s -- --domain openclaw.example.com'
 ```
 
 The script installs Docker, Caddy, clones the repo, builds the container, and provisions a TLS certificate. Takes ~5 minutes on a fresh server.

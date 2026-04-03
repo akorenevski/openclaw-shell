@@ -134,11 +134,11 @@ Deploy to any Linux server with automatic HTTPS. The install script handles ever
 1. Point your domain's DNS A record to your server's IP address (skip this if using nip.io)
 2. SSH into your server and run the install script:
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/ai-cluster-one/openclaw-shell/main/install-vps.sh | bash
+   curl -fsSL https://raw.githubusercontent.com/akorenevski/openclaw-shell/main/install-vps.sh | bash
    ```
    Or pass the domain directly:
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/ai-cluster-one/openclaw-shell/main/install-vps.sh | bash -s -- --domain openclaw.example.com
+   curl -fsSL https://raw.githubusercontent.com/akorenevski/openclaw-shell/main/install-vps.sh | bash -s -- --domain openclaw.example.com
    ```
 3. The script will prompt you for a domain. Three options:
    - Enter your domain (e.g., `openclaw.example.com`) — automatic HTTPS via Let's Encrypt

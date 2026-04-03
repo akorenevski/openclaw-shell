@@ -8,7 +8,7 @@ set -euo pipefail
 # container with automatic HTTPS via Caddy reverse proxy.
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/ai-cluster-one/openclaw-shell/main/install-vps.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/akorenevski/openclaw-shell/main/install-vps.sh | bash
 #   curl ... | bash -s -- --domain app.example.com --yes
 #   curl ... | bash -s -- --domain app.example.com --data-dir /mnt/volume/openclaw --yes
 #
@@ -18,7 +18,7 @@ set -euo pipefail
 #   - Port 80, 443, and 22 open
 # ============================================================================
 
-REPO_URL="https://github.com/ai-cluster-one/openclaw-shell.git"
+REPO_URL="https://github.com/akorenevski/openclaw-shell.git"
 INSTALL_DIR="/opt/openclaw-shell"
 DEFAULT_DATA_DIR="/data/openclaw"
 CONTAINER_NAME="openclaw-shell"
