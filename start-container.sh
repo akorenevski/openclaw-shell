@@ -114,6 +114,15 @@ node -e "
     config.agents.defaults.subagents = config.agents.defaults.subagents || {};
     config.agents.defaults.subagents.maxConcurrent = 2;
 
+    // Disable model fallback — prevent Haiku cron jobs from silently escalating to Sonnet
+    // When a model times out or fails, fail the run instead of retrying on a more expensive model
+    config.agents.defaults.model = config.agents.defaults.model || {};
+    if (typeof config.agents.defaults.model === 'string') {
+        config.agents.defaults.model = { primary: config.agents.defaults.model, fallbacks: [] };
+    } else {
+        config.agents.defaults.model.fallbacks = [];
+    }
+
     // Cron configuration - enable on first boot, preserve user choice on subsequent boots
     config.cron = config.cron || {};
     if (config.cron.enabled === undefined) {
@@ -153,6 +162,15 @@ node -e "
 
 # Remove old FileBrowser database for clean --noauth start
 rm -f /data/.openclaw/filebrowser.db 2>/dev/null || true
+
+# Kill any leftover gateway process to prevent port-conflict restart storms
+# (supervisord autorestart can race with a still-dying process)
+if [ -f /tmp/openclaw-gateway.pid ]; then
+    kill "$(cat /tmp/openclaw-gateway.pid)" 2>/dev/null || true
+    rm -f /tmp/openclaw-gateway.pid
+fi
+# Also kill anything on port 8082 directly
+fuser -k 8082/tcp 2>/dev/null || true
 
 # Clean up stale Chromium lock files from previous container runs
 # These persist on the volume and prevent Chromium from starting
