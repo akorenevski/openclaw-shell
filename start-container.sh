@@ -69,6 +69,7 @@ node -e "
     config.gateway.bind = 'loopback';        // CRITICAL: localhost only for security
     config.gateway.mode = 'local';           // Local deployment mode
     config.gateway.trustedProxies = ['127.0.0.1'];  // Required for loopback connections
+    config.gateway.channelStaleEventThresholdMinutes = 90;  // Prevent Discord stale-socket restarts (default 30 is too aggressive for low-traffic bots)
 
     // Control UI - REQUIRED for web dashboard access
     config.gateway.controlUi = config.gateway.controlUi || {};
