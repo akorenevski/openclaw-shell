@@ -202,8 +202,9 @@ node -e "
 
         let changed = false;
 
-        // Patch 1: Remove hard-return after trusted-proxy user check fails
-        // (let execution fall through to shared-secret auth)
+        // Patch 1a (legacy single-line dispatcher, OpenClaw < v2026.4.5):
+        // Remove hard-return after trusted-proxy user check fails so execution
+        // falls through to shared-secret auth.
         const p1 = /if \(\"user\" in result\) return \{\s*ok: true,\s*method: \"trusted-proxy\",\s*user: result\.user\s*\};\s*return \{\s*ok: false,\s*reason: result\.reason\s*\};/;
         if (p1.test(code)) {
             code = code.replace(p1,
@@ -212,11 +213,43 @@ node -e "
             changed = true;
         }
 
-        // Patch 2: Token auth block checks auth.mode === 'token' — also allow when mode
-        // is 'trusted-proxy' and a token is configured (shared-secret fallback)
-        const p2 = 'if (auth.mode === \"token\")';
-        if (code.includes(p2)) {
-            code = code.replace(p2,
+        // Patch 1b (multi-line dispatcher, OpenClaw >= v2026.4.5):
+        // Same intent as 1a. Replaces only the failure-return block at the end of
+        // the trusted-proxy branch with a comment so execution falls through.
+        const p1b = /(\}\s*\n\s*return \{\s*\n\s*ok: false,\s*\n\s*reason: result\.reason\s*\n\s*\};)/;
+        if (p1b.test(code)) {
+            code = code.replace(p1b, '} /* pr17746-patched-fallthrough: trusted-proxy failure falls through to token/password auth */');
+            changed = true;
+        }
+
+        // Patch 2: Loopback rejection — bypass for internal cron/CLI from 127.0.0.1.
+        // Recent OpenClaw added `if (isLoopbackAddress(remoteAddr)) return { reason: \"trusted_proxy_loopback_source\" };`
+        // to authorizeTrustedProxy(). For our setup (auth-proxy + cron CLI both on loopback),
+        // this hard-rejects internal services. Bypass by stripping the line.
+        const p2loop = /if \(isLoopbackAddress\(remoteAddr\)\) return \{ reason: \"trusted_proxy_loopback_source\" \};/;
+        if (p2loop.test(code)) {
+            code = code.replace(p2loop, '/* pr17746-patched-loopback: allow loopback for internal cron/CLI */');
+            changed = true;
+        }
+
+        // Patch 3: Allow password auth in trusted-proxy mode when CLI sends a password.
+        // The dispatcher used to also run password verification when connectAuth carried a
+        // password regardless of auth.mode; recent versions gate strictly on mode === password.
+        // Re-open the gate for trusted-proxy + connectAuth.password.
+        const p3 = /if \(auth\.mode === \"password\"\) \{/;
+        if (p3.test(code)) {
+            code = code.replace(p3,
+                'if (auth.mode === \"password\" || (auth.mode === \"trusted-proxy\" && connectAuth?.password)) { /* pr17746-patched-password-fallback */'
+            );
+            changed = true;
+        }
+
+        // Patch 4 (optional, kept from older versions): Token auth block also runs when
+        // mode is 'trusted-proxy' and a token is configured. Harmless if already in place
+        // upstream (recent versions include this natively).
+        const p4 = 'if (auth.mode === \"token\")';
+        if (code.includes(p4) && !code.includes('auth.mode === \"token\" || (auth.mode === \"trusted-proxy\" && auth.token)')) {
+            code = code.replace(p4,
                 'if (auth.mode === \"token\" || (auth.mode === \"trusted-proxy\" && auth.token))'
             );
             changed = true;
