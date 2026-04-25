@@ -15,7 +15,7 @@
 FROM node:22-bookworm AS builder
 
 # Build arguments
-ARG OPENCLAW_GIT_REF=v2026.4.5
+ARG OPENCLAW_GIT_REF=v2026.4.23
 ARG SHELL_VERSION=dev
 
 # Install build dependencies
